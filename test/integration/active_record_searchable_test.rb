@@ -629,7 +629,7 @@ module Tire
 
         should "return matching queries when saving" do
           a = ActiveRecordModelWithPercolation.create! :title => 'Warning!'
-          assert_contains a.matches, 'alert'
+          assert_contains a.tire_matches, 'alert'
         end
       end
 

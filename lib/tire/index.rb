@@ -461,7 +461,7 @@ module Tire
       payload.update( :query => query ) if query
 
       @response = Configuration.client.get "#{url}/#{type}/_percolate", MultiJson.encode(payload)
-      MultiJson.decode(@response.body)['matches']
+      MultiJson.decode(@response.body)['tire_matches']
 
     ensure
       curl = %Q|curl -X GET "#{url}/#{type}/_percolate?pretty" -d '#{MultiJson.encode(payload, :pretty => Configuration.pretty)}'|

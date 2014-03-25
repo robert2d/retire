@@ -974,7 +974,7 @@ end
 # It works in a „reverse search“ manner to regular search workflow of adding
 # documents to the index and then querying them.
 # Percolation allows us to register a query, and ask if a specific document
-# matches it, either on demand, or immediately as the document is being indexed.
+# tire_matches it, either on demand, or immediately as the document is being indexed.
 
 # Let's review an example for an index named _weather_.
 # We will register three queries for percolation against this index.
@@ -1006,18 +1006,18 @@ Tire.index('_percolator').refresh
 
 # Now, let's _percolate_ a document containing some trigger words against all registered queries.
 #
-matches = index.percolate(:message => '[Warning] Extreme flooding expected after tsunami wave.')
+tire_matches = index.percolate(:message => '[Warning] Extreme flooding expected after tsunami wave.')
 
 # The result will contain, unsurprisingly, names of all the three registered queries:
 #
 #     Matching queries: ["floods", "tsunami", "warning"]
 #
-puts "Matching queries: " + matches.inspect
+puts "Matching queries: " + tire_matches.inspect
 
 # We can filter the executed queries with a regular _Elasticsearch_ query passed as a block to
 # the `percolate` method.
 #
-matches = index.percolate(:message => '[Warning] Extreme flooding expected after tsunami wave.') do
+tire_matches = index.percolate(:message => '[Warning] Extreme flooding expected after tsunami wave.') do
             # Let's use a _terms_ query against the `tags` field.
             term :tags, 'tsunami'
           end
@@ -1026,17 +1026,17 @@ matches = index.percolate(:message => '[Warning] Extreme flooding expected after
 #
 #     Matching queries: ["tsunami"]
 #
-puts "Matching queries: " + matches.inspect
+puts "Matching queries: " + tire_matches.inspect
 
 # What if we percolate another document, without the “tsunami” trigger word?
 #
-matches = index.percolate(:message => '[Warning] Extreme temperatures expected.') { term :tags, 'tsunami' }
+tire_matches = index.percolate(:message => '[Warning] Extreme temperatures expected.') { term :tags, 'tsunami' }
 
 # As expected, we will get an empty array:
 #
 #     Matching queries: []
 #
-puts "Matching queries: " + matches.inspect
+puts "Matching queries: " + tire_matches.inspect
 
 # Well, that's of course immensely useful for real-time search systems. But, there's more.
 # We can _percolate_ a document _at the same time_ it is being stored in the index,
@@ -1051,7 +1051,7 @@ response = index.store( { :message => '[Warning] Severe floods expected after ts
 #
 #     Matching queries: ["floods", "tsunami", "warning"]
 #
-puts "Matching queries: " + response['matches'].inspect
+puts "Matching queries: " + response['tire_matches'].inspect
 
 # As with the _percolate_ example, we can filter the executed queries.
 #
@@ -1063,7 +1063,7 @@ response = index.store( { :message => '[Warning] Severe floods expected after ts
 #
 #     Matching queries: ["tsunami"]
 #
-puts "Matching queries: " + response['matches'].inspect
+puts "Matching queries: " + response['tire_matches'].inspect
 
 ### ActiveModel Integration
 

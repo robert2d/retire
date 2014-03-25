@@ -507,7 +507,7 @@ module Tire
 
             response = { 'ok'  => true,
                          '_id' => 1,
-                         'matches' => ['foo'] }
+                         'tire_matches' => ['foo'] }
             Configuration.client.expects(:post).returns(mock_response(response.to_json))
           end
 
@@ -535,11 +535,11 @@ module Tire
             @model.update_elasticsearch_index
           end
 
-          should "set the 'matches' property from percolated response" do
+          should "set the 'tire_matches' property from percolated response" do
             @model = ::ModelWithIndexCallbacks.new
             @model.update_elasticsearch_index
 
-            assert_equal ['foo'], @model.matches
+            assert_equal ['foo'], @model.tire_matches
           end
 
         end
@@ -729,7 +729,7 @@ module Tire
             Tire::Index.any_instance.expects(:store).with do |doc,options|
               # p [doc,options]
               options[:percolate] == true
-            end.returns(MultiJson.decode('{"ok":true,"_id":"test","matches":["alerts"]}'))
+            end.returns(MultiJson.decode('{"ok":true,"_id":"test","tire_matches":["alerts"]}'))
 
             @article.update_elasticsearch_index
           end
@@ -767,16 +767,16 @@ module Tire
             Tire::Index.any_instance.expects(:store).with do |doc,options|
               # p [doc,options]
               options[:percolate] == true
-            end.returns(MultiJson.decode('{"ok":true,"_id":"test","matches":["alerts"]}'))
+            end.returns(MultiJson.decode('{"ok":true,"_id":"test","tire_matches":["alerts"]}'))
 
             percolated = ActiveModelArticleWithPercolation.new :title => 'Percolate me!'
             percolated.update_elasticsearch_index
           end
 
           should "execute the 'on_percolate' callback" do
-            $test__matches = nil
+            $test__tire_matches = nil
             class ::ActiveModelArticleWithPercolation < ::ActiveModelArticleWithCallbacks
-              on_percolate { $test__matches = matches }
+              on_percolate { $test__tire_matches = tire_matches }
             end
             percolated = ActiveModelArticleWithPercolation.new :title => 'Percolate me!'
 
@@ -785,17 +785,17 @@ module Tire
                                        doc == percolated &&
                                        options[:percolate] == true
                                      end.
-                                     returns(MultiJson.decode('{"ok":true,"_id":"test","matches":["alerts"]}'))
+                                     returns(MultiJson.decode('{"ok":true,"_id":"test","tire_matches":["alerts"]}'))
 
             percolated.update_elasticsearch_index
 
-            assert_equal ['alerts'], $test__matches
+            assert_equal ['alerts'], $test__tire_matches
           end
 
           should "execute the 'on_percolate' callback for specific pattern" do
-            $test__matches = nil
+            $test__tire_matches = nil
             class ::ActiveModelArticleWithPercolation < ::ActiveModelArticleWithCallbacks
-              on_percolate('tags:alert') { $test__matches = self.matches }
+              on_percolate('tags:alert') { $test__tire_matches = self.tire_matches }
             end
             percolated = ActiveModelArticleWithPercolation.new :title => 'Percolate me!'
 
@@ -804,11 +804,11 @@ module Tire
                                        doc == percolated &&
                                        options[:percolate] == 'tags:alert'
                                      end.
-                                     returns(MultiJson.decode('{"ok":true,"_id":"test","matches":["alerts"]}'))
+                                     returns(MultiJson.decode('{"ok":true,"_id":"test","tire_matches":["alerts"]}'))
 
             percolated.update_elasticsearch_index
 
-            assert_equal ['alerts'], $test__matches
+            assert_equal ['alerts'], $test__tire_matches
           end
 
         end

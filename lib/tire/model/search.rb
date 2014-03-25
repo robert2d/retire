@@ -146,7 +146,7 @@ module Tire
               index.remove instance
             else
               @response = index.store( instance, {:percolate => percolator} )
-              instance.tire.matches = @response['matches'] if instance.tire.respond_to?(:matches=)
+              instance.tire.tire_matches = @response['tire_matches'] if instance.tire.respond_to?(:tire_matches=)
               self
             end
           end
@@ -189,17 +189,17 @@ module Tire
           end
         end
 
-        def matches
+        def tire_matches
           instance.instance_eval do
             @tire__attributes ||= {}
-            @tire__attributes['matches']
+            @tire__attributes['tire_matches']
           end
         end
 
-        def matches=(value)
+        def tire_matches=(value)
           instance.instance_eval do
             @tire__attributes ||= {}
-            @tire__attributes['matches'] = value
+            @tire__attributes['tire_matches'] = value
           end
         end
 

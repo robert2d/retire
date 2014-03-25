@@ -50,7 +50,7 @@ module Tire
                   self._index   = response['_index']
                   self._type    = response['_type']
                   self._version = response['_version']
-                  self.matches  = response['matches']
+                  self.tire_matches  = response['tire_matches']
                 end
               end
               response

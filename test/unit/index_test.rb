@@ -1087,10 +1087,10 @@ module Tire
                                                assert_equal "#{@index.url}/document/_percolate", url
                                                assert_equal 'Test', payload['doc']['title']
                                               end.
-                               returns(mock_response('{"ok":true,"_id":"test","matches":["alerts"]}'))
+                               returns(mock_response('{"ok":true,"_id":"test","tire_matches":["alerts"]}'))
 
-          matches = @index.percolate :title => 'Test'
-          assert_equal ["alerts"], matches
+          tire_matches = @index.percolate :title => 'Test'
+          assert_equal ["alerts"], tire_matches
         end
 
         should "percolate a typed document against all registered queries" do
@@ -1099,10 +1099,10 @@ module Tire
                                                assert_equal "#{@index.url}/article/_percolate", url
                                                assert_equal 'Test', payload['doc']['title']
                                               end.
-                               returns(mock_response('{"ok":true,"_id":"test","matches":["alerts"]}'))
+                               returns(mock_response('{"ok":true,"_id":"test","tire_matches":["alerts"]}'))
 
-          matches = @index.percolate :type => 'article', :title => 'Test'
-          assert_equal ["alerts"], matches
+          tire_matches = @index.percolate :type => 'article', :title => 'Test'
+          assert_equal ["alerts"], tire_matches
         end
 
         should "percolate document against specific queries" do
@@ -1113,10 +1113,10 @@ module Tire
                                                assert_equal 'Test', payload['doc']['title']
                                                assert_equal 'tag:alerts', payload['query']['query_string']['query']
                                               end.
-                               returns(mock_response('{"ok":true,"_id":"test","matches":["alerts"]}'))
+                               returns(mock_response('{"ok":true,"_id":"test","tire_matches":["alerts"]}'))
 
-          matches = @index.percolate(:title => 'Test') { string 'tag:alerts' }
-          assert_equal ["alerts"], matches
+          tire_matches = @index.percolate(:title => 'Test') { string 'tag:alerts' }
+          assert_equal ["alerts"], tire_matches
         end
 
         context "while storing document" do
@@ -1126,7 +1126,7 @@ module Tire
                                  with do |url, payload|
                                    assert_equal "#{@index.url}/article/?percolate=%2A", url
                                  end.
-                                 returns(mock_response('{"ok":true,"_id":"test","matches":["alerts"]}'))
+                                 returns(mock_response('{"ok":true,"_id":"test","tire_matches":["alerts"]}'))
             @index.store( {:type => 'article', :title => 'Test'}, {:percolate => true} )
           end
 
@@ -1135,9 +1135,9 @@ module Tire
                                  with do |url, payload|
                                    assert_equal "#{@index.url}/article/?percolate=tag%3Aalerts", url
                                  end.
-                                 returns(mock_response('{"ok":true,"_id":"test","matches":["alerts"]}'))
+                                 returns(mock_response('{"ok":true,"_id":"test","tire_matches":["alerts"]}'))
             response = @index.store( {:type => 'article', :title => 'Test'}, {:percolate => 'tag:alerts'} )
-            assert_equal response['matches'], ['alerts']
+            assert_equal response['tire_matches'], ['alerts']
           end
 
         end
